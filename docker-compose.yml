@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    image: webdevops/php-nginx:8.2-alpine
+    container_name: portfolio_app
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      - WEB_DOCUMENT_ROOT=/app/public
+      - PHP_DISPLAY_ERRORS=0
+    depends_on:
+      - db
+    networks:
+      - portfolio_net
+
+  db:
+    image: mysql:8.0
+    container_name: portfolio_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_ROOT_PASSWORD: secret123
+      MYSQL_USER: portfolio
+      MYSQL_PASSWORD: secret123
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - portfolio_net
+
+volumes:
+  db_data:
+
+networks:
+  portfolio_net:
